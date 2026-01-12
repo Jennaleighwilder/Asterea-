@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASTRAEA - Understand the Jury Before They Decide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Void Foundation */
+            --deep-black: #0a0a0a;
+            --void-black: #0d0d0d;
+            --charcoal: #1a1a1a;
+            --steel: #2a2a2a;
+            --smoke: #3a3a3a;
+            --ash: #4a4a4a;
+            --silver: #8a8a8a;
+            --platinum: #c0c0c0;
+            --pearl: #e8e8e8;
+            --white: #ffffff;
+            
+            /* PUNCH - Celestial Electric */
+            --astraea-violet: #8b5cf6;
+            --astraea-purple: #a855f7;
+            --electric-cyan: #22d3ee;
+            --neon-blue: #3b82f6;
+            --hot-pink: #ec4899;
+            --warning-amber: #f59e0b;
+            --danger-red: #ef4444;
+            --success-green: #10b981;
+            
+            /* Gradients */
+            --aurora-gradient: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #22d3ee 100%);
+            --fire-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            --void-gradient: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--deep-black);
+            color: var(--pearl);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Film Grain Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 700;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 24px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(180deg, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0) 100%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav.scrolled {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 16px 60px;
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 800;
+            font-style: italic;
+            background: var(--aurora-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 48px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--platinum);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--electric-cyan);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--electric-cyan);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--aurora-gradient);
+            border: none;
+            color: white;
+            padding: 14px 32px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 160px 60px 120px;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(34, 211, 238, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(236, 72, 153, 0.05) 0%, transparent 60%),
+                var(--deep-black);
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: var(--electric-cyan);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        .hero-title {
+            font-size: clamp(72px, 12vw, 140px);
+            font-weight: 900;
+            font-style: italic;
+            background: var(--aurora-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+            line-height: 0.9;
+        }
+
+        .hero-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(24px, 3.5vw, 36px);
+            font-weight: 400;
+            font-style: italic;
+            color: var(--platinum);
+            margin-bottom: 24px;
+            letter-spacing: 0.02em;
+        }
+
+        .hero-tagline {
+            font-size: 16px;
+            color: var(--silver);
+            max-width: 600px;
+            margin: 0 auto 48px;
+            line-height: 1.8;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--aurora-gradient);
+            color: white;
+            border: none;
+            padding: 20px 48px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 25px 50px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--pearl);
+            border: 1px solid var(--smoke);
+            padding: 20px 48px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--astraea-violet);
+            color: var(--electric-cyan);
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        /* Sections */
+        section {
+            padding: 140px 60px;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--electric-cyan);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .section-title {
+            font-size: clamp(40px, 6vw, 64px);
+            color: var(--white);
+            margin-bottom: 20px;
+            font-style: italic;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--silver);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Outputs Section */
+        .outputs-section {
+            background: var(--charcoal);
+        }
+
+        .outputs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .output-card {
+            background: var(--steel);
+            border: 1px solid var(--smoke);
+            padding: 48px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .output-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--aurora-gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .output-card:hover {
+            border-color: var(--astraea-violet);
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .output-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .output-icon {
+            font-size: 48px;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .output-card h3 {
+            font-size: 28px;
+            color: var(--white);
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .output-card p {
+            color: var(--silver);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* Guardrails Section */
+        .guardrails-section {
+            background: var(--deep-black);
+        }
+
+        .guardrails-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .guardrail-item {
+            text-align: center;
+            padding: 40px 24px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .guardrail-item:hover {
+            border-color: var(--smoke);
+            background: rgba(42, 42, 42, 0.3);
+        }
+
+        .guardrail-icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .guardrail-item h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: var(--white);
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        .guardrail-item p {
+            font-size: 14px;
+            color: var(--silver);
+            line-height: 1.6;
+        }
+
+        /* Demo Section */
+        .demo-section {
+            background: var(--charcoal);
+        }
+
+        .demo-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .demo-window {
+            background: var(--deep-black);
+            border: 1px solid var(--smoke);
+            overflow: hidden;
+        }
+
+        .demo-header {
+            background: var(--steel);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--smoke);
+        }
+
+        .demo-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .demo-dot.red { background: #ff5f56; }
+        .demo-dot.yellow { background: #ffbd2e; }
+        .demo-dot.green { background: #27ca3f; }
+
+        .demo-content {
+            padding: 32px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            color: var(--platinum);
+        }
+
+        .demo-content .comment {
+            color: var(--silver);
+        }
+
+        .demo-content .command {
+            color: var(--electric-cyan);
+        }
+
+        .demo-content .output {
+            color: var(--success-green);
+        }
+
+        .demo-content .warning {
+            color: var(--warning-amber);
+        }
+
+        /* State Table */
+        .state-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 48px;
+        }
+
+        .state-table th,
+        .state-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--smoke);
+        }
+
+        .state-table th {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--silver);
+            background: var(--steel);
+        }
+
+        .state-table td {
+            font-size: 14px;
+            color: var(--platinum);
+        }
+
+        .state-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 2px;
+        }
+
+        .state-badge.allowed { 
+            background: rgba(16, 185, 129, 0.2); 
+            color: var(--success-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .state-badge.blocked { 
+            background: rgba(239, 68, 68, 0.2); 
+            color: var(--danger-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: 
+                radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.2) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+                var(--charcoal);
+            text-align: center;
+            padding: 160px 60px;
+        }
+
+        .cta-title {
+            font-size: clamp(48px, 8vw, 80px);
+            color: var(--white);
+            margin-bottom: 24px;
+            font-style: italic;
+            letter-spacing: -0.02em;
+        }
+
+        .cta-subtitle {
+            font-size: 18px;
+            color: var(--silver);
+            max-width: 500px;
+            margin: 0 auto 48px;
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--deep-black);
+            padding: 80px 60px 40px;
+            border-top: 1px solid var(--steel);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+        }
+
+        .footer-brand .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-style: italic;
+            font-weight: 800;
+            background: var(--aurora-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand p {
+            color: var(--silver);
+            font-size: 14px;
+            line-height: 1.7;
+            max-width: 300px;
+        }
+
+        .footer-col h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--platinum);
+            margin-bottom: 20px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            margin-bottom: 12px;
+        }
+
+        .footer-col a {
+            color: var(--silver);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-col a:hover {
+            color: var(--electric-cyan);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 60px auto 0;
+            padding-top: 30px;
+            border-top: 1px solid var(--steel);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-bottom p {
+            color: var(--silver);
+            font-size: 13px;
+        }
+
+        .footer-bottom a {
+            color: var(--electric-cyan);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .nav { padding: 20px 30px; }
+            .nav-links { display: none; }
+            section { padding: 100px 30px; }
+            .outputs-grid { grid-template-columns: 1fr; }
+            .guardrails-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-content { grid-template-columns: 1fr 1fr; gap: 40px; }
+        }
+
+        @media (max-width: 768px) {
+            .hero { padding: 140px 24px 100px; }
+            .guardrails-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav" id="nav">
+        <div class="nav-logo">ASTRAEA</div>
+        <ul class="nav-links">
+            <li><a href="#outputs">Outputs</a></li>
+            <li><a href="#guardrails">Guardrails</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <a href="mailto:TheForgottenCode@gmail.com?subject=ASTRAEA%20Inquiry" class="nav-cta">Get Access</a>
+    </nav>
+
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <span class="hero-badge">Jury Understanding System</span>
+            <h1 class="hero-title">ASTRAEA</h1>
+            <p class="hero-subtitle">Understand the jury you have — before they decide your case</p>
+            <p class="hero-tagline">
+                Advisory jury observation and voir dire planning for real-world trials.
+                No scoring. No prediction. No ranking. Human judgment required.
+            </p>
+            <div class="hero-cta-group">
+                <a href="mailto:TheForgottenCode@gmail.com?subject=ASTRAEA%20License%20Inquiry" class="btn-primary">Request License</a>
+                <a href="#how-it-works" class="btn-secondary">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="outputs-section" id="outputs">
+        <div class="section-header">
+            <span class="section-label">What You Get</span>
+            <h2 class="section-title">Observation, Not Prediction</h2>
+            <p class="section-subtitle">Four outputs designed to survive court scrutiny</p>
+        </div>
+        <div class="outputs-grid">
+            <div class="output-card">
+                <span class="output-icon">📋</span>
+                <h3>Panel Dynamics Log</h3>
+                <p>Group-level observations during selection. How the panel behaves as a unit — not individual judgments. Observable patterns only.</p>
+            </div>
+            <div class="output-card">
+                <span class="output-icon">💬</span>
+                <h3>Question Response Tracker</h3>
+                <p>Structured transcript support for voir dire. What was asked, what was answered, verbatim. No interpretation layer.</p>
+            </div>
+            <div class="output-card">
+                <span class="output-icon">👁️</span>
+                <h3>Neutral Body Signal Log</h3>
+                <p>Observable actions only. "J003 looked down" — not "J003 seemed nervous." Description without inference.</p>
+            </div>
+            <div class="output-card">
+                <span class="output-icon">📝</span>
+                <h3>Voir Dire Script Builder</h3>
+                <p>Neutral question bank. Build your examination flow without leading or contaminating language. Judge-safe by design.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="guardrails-section" id="guardrails">
+        <div class="section-header">
+            <span class="section-label">Hard Limits</span>
+            <h2 class="section-title">What ASTRAEA Will Never Do</h2>
+            <p class="section-subtitle">Hard-coded prohibitions, not guidelines</p>
+        </div>
+        <div class="guardrails-grid">
+            <div class="guardrail-item">
+                <span class="guardrail-icon">🚫</span>
+                <h4>No Scoring</h4>
+                <p>Jurors are never ranked, rated, or assigned numeric values of any kind.</p>
+            </div>
+            <div class="guardrail-item">
+                <span class="guardrail-icon">🔮</span>
+                <h4>No Prediction</h4>
+                <p>"Will vote" and "likely convict" language is blocked at the system level.</p>
+            </div>
+            <div class="guardrail-item">
+                <span class="guardrail-icon">🧠</span>
+                <h4>No Profiling</h4>
+                <p>No psychological frameworks, archetypes, or personality typing permitted.</p>
+            </div>
+            <div class="guardrail-item">
+                <span class="guardrail-icon">⚡</span>
+                <h4>No Strike Advice</h4>
+                <p>ASTRAEA observes. You decide who stays and who goes. Always.</p>
+            </div>
+            <div class="guardrail-item">
+                <span class="guardrail-icon">💾</span>
+                <h4>No Permanent Storage</h4>
+                <p>Sessions expire. Juror data is ephemeral by design. Nothing persists.</p>
+            </div>
+            <div class="guardrail-item">
+                <span class="guardrail-icon">🔗</span>
+                <h4>Tamper-Evident</h4>
+                <p>Hash-chained event logs. Any modification breaks the chain and is detectable.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section" id="how-it-works">
+        <div class="section-header">
+            <span class="section-label">How It Works</span>
+            <h2 class="section-title">Court-Safe Workflow</h2>
+            <p class="section-subtitle">Observation to export in four steps</p>
+        </div>
+        <div class="demo-container">
+            <div class="output-card" style="margin-bottom: 24px;">
+                <h3 style="color: var(--electric-cyan); font-size: 18px; margin-bottom: 16px;">1. Create Session</h3>
+                <p>Open a case session with automatic expiration. Data is ephemeral by design.</p>
+            </div>
+            <div class="output-card" style="margin-bottom: 24px;">
+                <h3 style="color: var(--electric-cyan); font-size: 18px; margin-bottom: 16px;">2. Log Observations</h3>
+                <p>Record panel dynamics, question responses, and body signals using neutral, observable language only. System blocks interpretive or predictive terms.</p>
+            </div>
+            <div class="output-card" style="margin-bottom: 24px;">
+                <h3 style="color: var(--electric-cyan); font-size: 18px; margin-bottom: 16px;">3. Build Voir Dire Script</h3>
+                <p>Generate neutral question templates for examination. No leading language.</p>
+            </div>
+            <div class="output-card">
+                <h3 style="color: var(--electric-cyan); font-size: 18px; margin-bottom: 16px;">4. Export Field Packet</h3>
+                <p>Watermarked PDF with hash-chain verification. Survives discovery.</p>
+            </div>
+
+            <table class="state-table">
+                <thead>
+                    <tr>
+                        <th>Language Pattern</th>
+                        <th>Example</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Observable action</td>
+                        <td>"J003 nodded during testimony"</td>
+                        <td><span class="state-badge allowed">Allowed</span></td>
+                    </tr>
+                    <tr>
+                        <td>Prediction language</td>
+                        <td>"Will likely vote guilty"</td>
+                        <td><span class="state-badge blocked">Blocked</span></td>
+                    </tr>
+                    <tr>
+                        <td>Scoring/ranking</td>
+                        <td>"Favorability: 8/10"</td>
+                        <td><span class="state-badge blocked">Blocked</span></td>
+                    </tr>
+                    <tr>
+                        <td>Psychological inference</td>
+                        <td>"Exhibits authoritarian personality"</td>
+                        <td><span class="state-badge blocked">Blocked</span></td>
+                    </tr>
+                    <tr>
+                        <td>Verbatim response</td>
+                        <td>"Stated: 'I can be fair'"</td>
+                        <td><span class="state-badge allowed">Allowed</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="cta-section" id="contact">
+        <h2 class="cta-title">Ready to observe?</h2>
+        <p class="cta-subtitle">
+            Licensed software. Delivered directly. 
+            No public repositories. No shared infrastructure.
+        </p>
+        <div class="hero-cta-group">
+            <a href="mailto:TheForgottenCode@gmail.com?subject=ASTRAEA%20License%20Inquiry" class="btn-primary">Request License</a>
+            <a href="tel:423-388-8304" class="btn-secondary">Call Now</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">ASTRAEA</div>
+                <p>Jury Understanding System. Observation-only infrastructure for trial teams that require defensible documentation. Licensed software delivered directly to your firm.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#outputs">Capabilities</a></li>
+                    <li><a href="#guardrails">Guardrails</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#contact">Get Access</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Licensing</h4>
+                <ul>
+                    <li><a href="mailto:TheForgottenCode@gmail.com?subject=Single%20Firm%20License">Single Firm License</a></li>
+                    <li><a href="mailto:TheForgottenCode@gmail.com?subject=Enterprise%20License">Enterprise License</a></li>
+                    <li><a href="mailto:TheForgottenCode@gmail.com?subject=Custom%20Integration">Custom Integration</a></li>
+                    <li><a href="mailto:TheForgottenCode@gmail.com?subject=Training%20Request">Training</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:TheForgottenCode@gmail.com">TheForgottenCode@gmail.com</a></li>
+                    <li><a href="tel:423-388-8304">423-388-8304</a></li>
+                    <li><a href="#">Jennifer Leigh West</a></li>
+                    <li><a href="#">The Forgotten Code Research Institute</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 <a href="#">Jennifer Leigh West</a>. ASTRAEA™ is proprietary licensed software. All rights reserved.</p>
+            <p>Built by <a href="#">The Forgotten Code Research Institute</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Nav scroll effect
+        window.addEventListener('scroll', () => {
+            document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Dynamic background on hero
+        document.addEventListener('mousemove', (e) => {
+            const hero = document.querySelector('.hero');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            hero.style.background = `
+                radial-gradient(ellipse at ${x * 100}% ${y * 100}%, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at ${(1-x) * 100}% ${(1-y) * 100}%, rgba(34, 211, 238, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(236, 72, 153, 0.05) 0%, transparent 60%),
+                #0a0a0a
+            `;
+        });
+    </script>
+</body>
+</html>
