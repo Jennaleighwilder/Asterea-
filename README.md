@@ -12,7 +12,7 @@ ASTRAEA is proprietary licensed software for law firms and jury consultants. Thi
 
 ASTRAEA is available under commercial license. Contact for pricing and delivery:
 
-- **Email:** TheForgottenCode@gmail.com
+- **Email:** TheForgottenCode780@gmail.com
 - **Phone:** 423-388-8304
 
 ## What You Get
